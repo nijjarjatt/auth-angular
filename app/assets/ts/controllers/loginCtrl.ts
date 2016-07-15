@@ -9,20 +9,25 @@ export interface ILoginCtrl {
 };
 
 export class LoginCtrl implements ILoginCtrl{	
-	static $inject = ['$rootScope', 'AUTH_EVENTS'];
+	static $inject = ['$rootScope', 'AUTH_EVENTS', 'authService'];
 	credentials: ICredentials;
 
 	constructor(private $rootScope: ng.IRootScopeService, 
-	private auth_events: any){
+	private auth_events: any,
+	private authService: any){
 		this.credentials = {
 			username: '',
 			password: ''
 		}
 	}
 
-	login(credentials: ICredentials): void{
-		console.log(this.auth_events);
-		this.$rootScope.$broadcast(this.auth_events.loginSuccess);
+	login(credentials: ICredentials): void{		
+		this.authService.login(credentials)
+		.then((response: any) => {
+			this.$rootScope.$broadcast(this.auth_events.loginSuccess, 'Login Successful');
+		}, (error: any) => {
+			this.$rootScope.$broadcast(this.auth_events.loginFailed, 'Login Failed');
+		});
 	}
 
 }

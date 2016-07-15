@@ -1,15 +1,18 @@
 export interface IAuthEvents{
-	loginSuccess: string
+	loginSuccess: string;
+	loginFailed: string;
 }
 
-export class authEvents implements IAuthEvents{
+export class AuthEvents implements IAuthEvents{
 	loginSuccess: string;
+	loginFailed: string;
 
 	constructor() {
-		this.loginSuccess = 'auth-login-success'
+		this.loginSuccess = 'auth-login-success';
+		this.loginFailed = 'auth-login-fail';
 	}
 
-	static factory(): authEvents{
-		return new authEvents();
+	static factory(): IAuthEvents{
+		return new AuthEvents();
 	}
 }
