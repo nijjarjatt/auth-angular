@@ -15,6 +15,7 @@ var path = require('path');
 var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
+var jwt = require('jsonwebtoken');
 
 var COMMENTS_FILE = path.join(__dirname, 'comments.json');
 
@@ -24,6 +25,12 @@ app.use('/', express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
+//function for generating access-token for login api call (mocking for now because there is no real backend login implementation)
+function generateJwtToken(userInfo) {
+  return jwt.sign({
+    username: userInfo.username
+  }, 'Strongest Secret');
+} 
 // Additional middleware which will set headers that we need on each request.
 app.use(function(req, res, next) {
     // Set permissive CORS header - this allows this server to be used only as
@@ -35,11 +42,15 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.post('/api/login', function(req, res) {
-     console.log(req.body);
+app.post('/api/login', function(req, res) {    
     if(req.body && req.body.username && req.body.password){
-      var user = JSON.stringify(req.body);
-      res.json(user);
+      var accessToken = generateJwtToken({username: req.body.username});
+      var userInfo = {
+        user: req.body.username,
+        accessToken: accessToken
+      };
+      var response = JSON.stringify(userInfo);
+      res.json(userInfo);
     }else{
       res.sendStatus(400);
     }
