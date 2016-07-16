@@ -33,8 +33,8 @@ export class AuthService implements IAuthService {
 			    }
 			}
 		).then((res: any) => {
-			this.storageService.saveUserToken(angular.fromJson(res.data).accessToken);
-			return res;
+			this.storageService.setUserToken(angular.fromJson(res.data).accessToken);
+			return angular.fromJson(res.data).user;
 		});
 		return res;
 	}

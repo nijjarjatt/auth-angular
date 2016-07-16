@@ -9,12 +9,13 @@ export interface ILoginCtrl {
 };
 
 export class LoginCtrl implements ILoginCtrl{	
-	static $inject = ['$rootScope', 'AUTH_EVENTS', 'authService'];
+	static $inject = ['$rootScope', 'AUTH_EVENTS', 'authService', '$state'];
 	credentials: ICredentials;
 
 	constructor(private $rootScope: ng.IRootScopeService, 
 	private auth_events: any,
-	private authService: any){
+	private authService: any,
+	private $state: ng.ui.IStateService){
 		this.credentials = {
 			username: '',
 			password: ''
@@ -25,6 +26,7 @@ export class LoginCtrl implements ILoginCtrl{
 		this.authService.login(credentials)
 		.then((response: any) => {
 			this.$rootScope.$broadcast(this.auth_events.loginSuccess, 'Login Successful');
+			this.$state.go('account');
 		}, (error: any) => {
 			this.$rootScope.$broadcast(this.auth_events.loginFailed, 'Login Failed');
 		});
