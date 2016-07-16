@@ -9,7 +9,18 @@ export function appConfig($stateProvider: ng.ui.IStateProvider,
         url: '/',
         templateUrl: 'assets/views/landing.html',
         controller: appController.AppCtrl,
-        controllerAs: 'ac'
+        controllerAs: 'ac',
+        resolve: {
+            auth: (storageService: storageService.IStorageService, $q: angular.IQService) => {
+                let deferred = $q.defer();
+                if(!storageService.isAuthenticated()){
+                    deferred.resolve();
+                }else{
+                    deferred.reject({authenticated: true});
+                }
+                return deferred.promise;
+            }
+        }
     })
     .state('account', {
         url: '/my-account',
@@ -18,7 +29,7 @@ export function appConfig($stateProvider: ng.ui.IStateProvider,
         	auth: (storageService: storageService.IStorageService, $q: angular.IQService) => {
         		let deferred = $q.defer();
         		if(storageService.isAuthenticated()){
-        			deferred.resolve({authenticated: true});
+        			deferred.resolve();
         		}else{
         			deferred.reject({authenticated: false});
         		}
