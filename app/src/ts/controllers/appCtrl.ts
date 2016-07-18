@@ -11,10 +11,16 @@ export class AppCtrl implements IAppCtrl{
 	private auth_events: any){
 		this.loginMessage = '';
 		this.$rootScope.$on(this.auth_events.loginSuccess, (event: any, data: any) => {
-			this.loginMessage = data;
+			console.log('Login Success');
 		});
 		this.$rootScope.$on(this.auth_events.loginFailed, (event: any, data: any) => {
-			this.loginMessage = data;
+			console.log('Login Fail');
+		});
+		this.$rootScope.$on(this.auth_events.logoutSuccess, (event: any, data: any) => {
+			console.log('Logout Success');
+		});
+		this.$rootScope.$on(this.auth_events.logoutFailed, (event: any, data: any) => {
+			console.log('Logout Fail');
 		});
 	}
 }

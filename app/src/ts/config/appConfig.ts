@@ -1,17 +1,18 @@
-import * as appController from "../controllers/appCtrl";
-import * as storageService from "../services/storageService";
+import * as controllers from "../controllers";
+import * as services from "../services";
 
 export function appConfig($stateProvider: ng.ui.IStateProvider, 
 	$urlRouterProvider: ng.ui.IUrlRouterProvider) {
-	$stateProvider
+
+    $stateProvider
 
     .state('home', {
         url: '/',
-        templateUrl: 'assets/views/landing.html',
-        controller: appController.AppCtrl,
-        controllerAs: 'ac',
+        templateUrl: './views/landing.html',
+        controller: controllers.AppCtrl,
+        controllerAs: 'ac', 
         resolve: {
-            auth: (storageService: storageService.IStorageService, $q: angular.IQService) => {
+            auth: (storageService: services.IStorageService, $q: angular.IQService) => {
                 let deferred = $q.defer();
                 if(!storageService.isAuthenticated()){
                     deferred.resolve();
@@ -24,9 +25,11 @@ export function appConfig($stateProvider: ng.ui.IStateProvider,
     })
     .state('account', {
         url: '/my-account',
-        template: '<p>My Account</p>',
+        templateUrl: './views/account.html',
+        controller: controllers.AccntCtrl,
+        controllerAs: 'atc',
         resolve: {
-        	auth: (storageService: storageService.IStorageService, $q: angular.IQService) => {
+        	auth: (storageService: services.IStorageService, $q: angular.IQService) => {
         		let deferred = $q.defer();
         		if(storageService.isAuthenticated()){
         			deferred.resolve();

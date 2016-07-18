@@ -2,51 +2,49 @@ var gulp = require('gulp'),
   connect = require('gulp-connect'),
   browserify = require("browserify"),
   source = require('vinyl-source-stream');
-  tsify = require("tsify");
+  tsify = require("tsify")
+  ts = browserify({
+      basedir: '.',
+      debug: true,
+      entries: ['app/src/ts/main.ts'],
+      cache: {},
+      packageCache: {}
+  })
+  .plugin(tsify)
+  .bundle()
+  .pipe(source('bundle.js'))
+  .pipe(gulp.dest("app/dist/js"));
  
-gulp.task('connect', function() {
+gulp.task('connect', ['compile-ts', 'copy-html'], function() {
   connect.server({
-    root: 'app',
+    root: 'app/dist',
     livereload: true
   });
 });
 
-gulp.task('html', function () {
-  gulp.src('./app/**/*.html')
-    .pipe(connect.reload());
+gulp.task('html', ['copy-html'], function () {
+  gulp.src('./app/src/views/*')
+    .pipe(gulp.dest('./app/dist/views/'))
+    .pipe(connect.reload());  
 });
 
-gulp.task('js', function () {
-  gulp.src('./app/**/*.js')
-    .pipe(connect.reload());
+gulp.task('compile-ts', function(){
+  return ts;
 });
 
 gulp.task('ts', function(){
-    return browserify({
-        basedir: '.',
-        debug: true,
-        entries: ['app/assets/ts/main.ts'],
-        cache: {},
-        packageCache: {}
-    })
-    .plugin(tsify)
-    .bundle()
-    .pipe(source('bundle.js'))
-    .pipe(gulp.dest("app/assets/js"));
-
+  ts.pipe(connect.reload());
 });
  
-gulp.task('watch-html', function () {
-  gulp.watch(['./app/**/*.html'], ['html']);
+gulp.task('copy-html', function () {
+  gulp.src('./app/src/views/*')
+    .pipe(gulp.dest('./app/dist/views/'));
 });
 
-gulp.task('watch-js', function () {
-  gulp.watch(['./app/**/*.js'], ['js']);
-});
-
-gulp.task('watch-ts', function () {
-  gulp.watch(['./app/**/*.ts'], ['ts', 'watch-js']);
+gulp.task('watch', function () {
+  gulp.watch(['./app/src/**/*.ts'], ['ts']);  
+  gulp.watch(['./app/src/**/*.html'], ['html'])
 });
 
  
-gulp.task('default', ['connect', 'watch-ts', 'watch-html']);
+gulp.task('build', ['connect', 'watch']);

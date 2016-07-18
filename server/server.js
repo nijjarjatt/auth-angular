@@ -10,14 +10,11 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-var fs = require('fs');
 var path = require('path');
 var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
 var jwt = require('jsonwebtoken');
-
-var COMMENTS_FILE = path.join(__dirname, 'comments.json');
 
 app.set('port', (process.env.PORT || 3000));
 
@@ -39,6 +36,9 @@ app.use(function(req, res, next) {
 
     // Disable caching so we'll always get the latest comments.
     res.setHeader('Cache-Control', 'no-cache');
+
+    //Allow content type other than application/x-www-form-urlencoded, multipart/form-data, or text/plain
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');   
     next();
 });
 
@@ -51,6 +51,15 @@ app.post('/api/login', function(req, res) {
       };
       var response = JSON.stringify(userInfo);
       res.json(userInfo);
+    }else{
+      res.sendStatus(400);
+    }
+});
+
+app.post('/api/logout', function(req, res) {    
+    console.log('Logout Called');
+    if(req.body && req.body.userToken){
+      res.sendStatus(200)
     }else{
       res.sendStatus(400);
     }

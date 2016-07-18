@@ -1,20 +1,21 @@
-import {ICredentials} from "../controllers/loginCtrl";
-import * as appApiConfig from "../config/apiConfig";
-import * as storageService from "../services/storageService"; 
+import {ICredentials} from "../controllers";
+import * as config from "../config";
+import * as services from "../services"; 
 
 export interface IAuthService {
 	login(cresdentials: ICredentials): any;
+	logOut(userToken: any): any
 }
 export class AuthService implements IAuthService {	
 	static $inject = ['$http', 'appApiConfig', 'storageService'];
 
 	constructor(private $http: ng.IHttpService,
-	private appApiConfig: appApiConfig.IApiConfig,
-	private storageService: storageService.IStorageService) {}
+	private appApiConfig: config.IApiConfig,
+	private storageService: services.IStorageService) {}
 
 	login(cresdentials: ICredentials): any {
-		let loginUrl = this.appApiConfig.apiUrl + 'login';
 		let res:any;
+		let loginUrl = this.appApiConfig.apiUrl + 'login';
 
 		res = this.$http.post(
 			loginUrl, 
@@ -35,6 +36,22 @@ export class AuthService implements IAuthService {
 		).then((res: any) => {
 			this.storageService.setUserToken(angular.fromJson(res.data).accessToken);
 			return angular.fromJson(res.data).user;
+		});
+		return res;
+	}
+
+	logOut(userToken: any): any {
+		let res:any;
+		let logOutUrl = this.appApiConfig.apiUrl + 'logout';
+
+		res = this.$http.post(
+			logOutUrl, 
+			{
+				userToken: userToken
+			}
+		).then((response: any) => {
+			this.storageService.resetUserToken();
+			return response;
 		});
 		return res;
 	}
