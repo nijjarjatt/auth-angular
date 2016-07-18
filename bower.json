@@ -1,0 +1,21 @@
+{
+  "name": "angular-auth",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "Talwinder Singh"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/nijjarjatt/auth-angular",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.5.7",
+    "angular-ui-router": "^0.3.1"
+  }
+}

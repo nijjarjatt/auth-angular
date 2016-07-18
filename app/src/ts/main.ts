@@ -9,14 +9,10 @@ let app = angular.module('authApp', ['ui.router']);
 app
 	
 .config(config.appConfig)
-
 .run(config.appRun)
-
 .constant('AUTH_EVENTS', config.AuthEvents.factory())	
 .constant('appApiConfig', config.ApiConfig.factory())
-
 .service('authService', services.AuthService)
 .service('storageService', services.StorageService)
-
 .controller('loginController', controllers.LoginCtrl);
 
